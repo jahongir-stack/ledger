@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ledger — expense tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <h1>Ledger</h1>
+    <p class="tag">Track what leaves your pocket.</p>
+  </header>
+
+  <section class="summary">
+    <div class="summary-card total">
+      <span class="label">Total spent</span>
+      <span class="value">${{ "%.2f"|format(total) }}</span>
+    </div>
+    <div class="summary-card breakdown">
+      <span class="label">By category</span>
+      <div class="bars">
+        {% for cat, amt in by_category.items() %}
+        <div class="bar-row">
+          <span class="bar-cat">{{ cat }}</span>
+          <div class="bar-track">
+            <div class="bar-fill" style="width: {{ (amt / total * 100) if total > 0 else 0 }}%"></div>
+          </div>
+          <span class="bar-amt">${{ "%.0f"|format(amt) }}</span>
+        </div>
+        {% else %}
+        <p class="empty-note">No expenses yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="add-section">
+    <form action="/add" method="POST" class="add-form">
+      <input type="text" name="title" placeholder="What did you spend on?" required>
+      <input type="number" name="amount" step="0.01" min="0.01" placeholder="Amount" required>
+      <select name="category" required>
+        {% for c in categories %}
+        <option value="{{ c }}">{{ c }}</option>
+        {% endfor %}
+      </select>
+      <input type="date" name="date" value="{{ today }}" required>
+      <button type="submit">Add expense</button>
+    </form>
+  </section>
+
+  <section class="list-section">
+    {% if expenses %}
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Amount</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in expenses %}
+        <tr>
+          <td>{{ e.date }}</td>
+          <td>{{ e.title }}</td>
+          <td><span class="pill">{{ e.category }}</span></td>
+          <td class="amt">${{ "%.2f"|format(e.amount) }}</td>
+          <td>
+            <form action="/delete/{{ e.id }}" method="POST">
+              <button type="submit" class="delete-btn" aria-label="Delete">✕</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="empty-note">Nothing logged yet — add your first expense above.</p>
+    {% endif %}
+  </section>
+</div>
+
+</body>
+</html>
