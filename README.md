@@ -4,7 +4,7 @@ A clean Flask web app for logging and visualizing personal expenses.
 
 ---
 
-## ✨ Features
+## ✨ Features.
 
 - Add, list, and delete expenses
 - Automatic category breakdown with visual bars
