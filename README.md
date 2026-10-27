@@ -10,7 +10,7 @@ A clean Flask web app for logging and visualizing personal expenses.
 - Automatic category breakdown with visual bars
 - Running total of all spending
 - JSON summary API endpoint (`/api/summary`)
-- SQLite storage — zero external setup
+- SQLite storage — zero external setup.
 ---
 
 ## 🧩 Tech Stack
